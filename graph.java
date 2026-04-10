@@ -110,9 +110,21 @@ class LiveMetricsGraph extends JPanel {
             g2.setStroke(new BasicStroke(thicknesses[i], BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 
             List<Double> data = series.get(i);
-            for (int j = 0; j < data.size() - 1; j++) {
+            /*for (int j = 0; j < data.size() - 1; j++) {
                 Point p1 = scale.apply((double) j, data.get(j));
                 Point p2 = scale.apply((double) (j + 1), data.get(j + 1));
+                g2.drawLine(p1.x, p1.y, p2.x, p2.y);
+            }*/ 
+
+            int maxDrawPoints = 200_000; // choose 100k–500k
+            int size = data.size();
+
+            // Calculate step (how many points to skip)
+            int step = Math.max(1, size / maxDrawPoints);
+
+            for (int j = 0; j < size - step; j += step) {
+                Point p1 = scale.apply((double) j, data.get(j));
+                Point p2 = scale.apply((double) (j + step), data.get(j + step));
                 g2.drawLine(p1.x, p1.y, p2.x, p2.y);
             }
         }
