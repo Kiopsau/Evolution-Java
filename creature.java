@@ -306,7 +306,6 @@ public class creature {
             this.dna.effectiveVision, 
             this.dna.size, 
             this.metabolism, 
-            onBorder ? 0.0 : 1.0, 
             (double)age / 1000.0  // Age progress
         };
 

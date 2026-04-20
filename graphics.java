@@ -112,6 +112,14 @@ public class graphics extends JPanel implements KeyListener {
                         g.drawString(c.diseases.get(i), x + 10, y - 20 - 10 * i); 
                     }
                 } 
+            } 
+
+            //draw Plants 
+            g.setColor(Color.GREEN); 
+            for (plant p : new ArrayList<>(world.plants)) {
+                int x = (int) p.position.getX();
+                int y = (int) p.position.getY();
+                g.fillOval(x, y, 40, 40);
             }
 
             //draw total pop number 

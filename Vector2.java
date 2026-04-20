@@ -1,3 +1,5 @@
+import java.util.concurrent.ThreadLocalRandom;
+
 public class Vector2 {
     private double x; 
     private double y; 
@@ -38,6 +40,12 @@ public class Vector2 {
     public double getY() {
         return this.y; 
     } 
+
+    public Vector2 vary (double variance) {
+        double newX = this.x * ThreadLocalRandom.current().nextDouble(1 - variance, 1 + variance); 
+        double newY = this.y * ThreadLocalRandom.current().nextDouble(1 - variance, 1 + variance); 
+        return new Vector2(newX, newY); 
+    }
 
     @Override 
     public String toString() {

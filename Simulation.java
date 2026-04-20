@@ -54,6 +54,11 @@ public class Simulation {
         // Spawn initial creatures
         for (int i = 0; i < config.numCreatures; i++) {
             world.addCreature(new creature());
+        } 
+
+        //Spawn initial plants 
+        for (int i = 0; i < config.numPlants; i++) {
+            world.addPlant(new plant()); 
         }
 
         // Spawn initial food

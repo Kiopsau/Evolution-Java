@@ -7,7 +7,8 @@ public class world {
     public double height;
 
     public List<creature> creatures;
-    public List<food> foods;
+    public static List<food> foods; 
+    public List<plant> plants; 
 
     // Constructor (default args equivalent)
     public world(double width, double height) {
@@ -15,7 +16,8 @@ public class world {
         this.height = height;
 
         this.creatures = new ArrayList<>();
-        this.foods = new ArrayList<>();
+        this.foods = new ArrayList<>(); 
+        this.plants = new ArrayList<>(); 
     }
 
     // Default constructor
@@ -31,6 +33,10 @@ public class world {
 
     public void addFood(food food) {
         foods.add(food);
+    }
+
+    public void addPlant(plant plant) {
+        plants.add(plant); 
     }
 
     // -------------------------

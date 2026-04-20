@@ -67,12 +67,12 @@ public class Net {
 
             if (!isOutputLayer) {
                 // Hidden layers → tanh
-                output[col] = Math.tanh(value);
+                output[col] = tanh(value);
             } else { 
                 // Output layer → mixed behavior
                 if (col < 2) {
                     // movement (x, y)
-                    output[col] = Math.tanh(value);
+                    output[col] = tanh(value);
                 } else {
                     // reproduce
                     output[col] = sigmoid(value);
