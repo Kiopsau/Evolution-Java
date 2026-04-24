@@ -36,7 +36,7 @@ public class graphics extends JPanel implements KeyListener {
 
         try {
             // Draw Food
-            g.setColor(Color.GREEN);
+            g.setColor(Color.LIGHT_GRAY);
             for (food f : new ArrayList<>(world.foods)) {
                 int x = (int) f.position.getX();
                 int y = (int) f.position.getY();
@@ -100,7 +100,7 @@ public class graphics extends JPanel implements KeyListener {
 
 
 
-                // Mouse hover logic
+                // Mouse hover logic for creatures 
                 double dist = Math.hypot(x - mouseX, y - mouseY);
                 if (dist <= size) {
                     g.setColor(Color.YELLOW);
@@ -115,11 +115,33 @@ public class graphics extends JPanel implements KeyListener {
             } 
 
             //draw Plants 
-            g.setColor(Color.GREEN); 
             for (plant p : new ArrayList<>(world.plants)) {
+                g.setColor(Color.GREEN); 
                 int x = (int) p.position.getX();
                 int y = (int) p.position.getY();
-                g.fillOval(x, y, 40, 40);
+                g.fillOval(x - (int) p.size, y - (int) p.size, (int) (p.size * 2), (int) (p.size * 2)); 
+                //g.fillOval(x, y, 4, 4); 
+
+                //draw branches 
+                for (branch b : p.branches) {
+                    double bx = x + Math.cos(b.angle) * b.length; 
+                    double by = y + Math.sin(b.angle) * b.length; 
+                    g.drawLine(x, y, (int) bx, (int) by); 
+                } 
+
+
+                // Mouse hover logic for plants 
+                double dist = Math.hypot(x - mouseX, y - mouseY);
+                if (dist <= p.size) {
+                    g.setColor(Color.YELLOW);
+                    g.drawOval(x - (int) p.size - 2, y - (int) p.size - 2, ((int) p.size + 2) * 2, ((int) p.size + 2) * 2);
+                    g.setColor(Color.WHITE); 
+                    g.drawString(p.size + " " + p.branches.size(), x + 10, y - 10);  
+
+                    for (int i = 0; i < p.branches.size(); i++) {
+                        g.drawString(p.branches.get(i) + "", x + 10, y - 20 - 10 * i); 
+                    }
+                } 
             }
 
             //draw total pop number 

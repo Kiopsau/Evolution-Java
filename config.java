@@ -21,13 +21,13 @@ public class config {
 
     public static final double[] evolutionUniform = {0.75, 1.25};
 
-    public static final int numCreatures = 200; 
-    public static final int numFood = 200; 
+    public static final int numCreatures = 0; 
+    public static final int numFood = 0; 
     public static final int numPlants = 50; 
 
     public static final int reproductionCost = 80; 
 
-    public static final int numSteps = 100000; //00
+    public static final int numSteps = 1000000000; //00
 
     public static final long lifeExpectancy = 365 * 80; 
     public static final double[] lifeExpectancyUniform = {0.8, 1.2}; 
@@ -47,12 +47,19 @@ public class config {
 
 
     // #region2. PLANTS 
-    public static final int[] branchLengthUniform = {10, 30}; 
-    public static final double[] fruitsPerBranchLength = {0.5, 1.5}; 
+    public static final int[] branchLengthUniform = {5, 15}; 
+    public static final double[] fruitsPerBranchLength = {0.1, 0.3}; 
 
-    public static final double maxBranchGrowthPercentage = 0.25; 
+    public static final double maxBranchGrowthPercentage = 0.01; 
 
     public static final double[] plantPositionUniform = {0, worldSize[0]}; 
-    //public static final double[] 
+
+    public static final double[] plantSizeUniform = {2.0, 5.0}; 
+
+    public static double plantBranchGrowthChance = 0.01; 
+
+    public static int[] scalarMaxBranchUnifrom = {1, 3}; 
+
+    public static double branchFruitGrowthChance = 0.075; 
     //#endregion 
 }

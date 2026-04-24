@@ -71,7 +71,7 @@ public class Simulation {
         int deathAgeSinceLast = 0; 
 
         try (FileWriter writer = new FileWriter("result.txt")) { 
-            while (config.step < config.numSteps && !world.creatures.isEmpty()) {
+            while (config.step < config.numSteps /*&& !world.creatures.isEmpty()*/) {
                 if (!panel.paused) {
                     long currentTime = System.nanoTime();
                     config.deltaTimeMs = (currentTime - config.lastTime) / 1_000_000.0; // ms
@@ -144,7 +144,7 @@ public class Simulation {
                 panel.repaint(); 
                 
                 try {
-                    Thread.sleep(0); 
+                    Thread.sleep(10); 
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }

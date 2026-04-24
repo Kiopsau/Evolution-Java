@@ -41,9 +41,17 @@ public class Vector2 {
         return this.y; 
     } 
 
-    public Vector2 vary (double variance) {
-        double newX = this.x * ThreadLocalRandom.current().nextDouble(1 - variance, 1 + variance); 
-        double newY = this.y * ThreadLocalRandom.current().nextDouble(1 - variance, 1 + variance); 
+    public Vector2 varyLinear (double offset) {
+        double newX = this.x + ThreadLocalRandom.current().nextDouble(-offset, offset); 
+        double newY = this.y + ThreadLocalRandom.current().nextDouble(-offset, offset); 
+        return new Vector2(newX, newY); 
+    } 
+
+    public Vector2 varyRadial (double offset) {
+        double angle = ThreadLocalRandom.current().nextDouble(0, 2 * Math.PI); 
+        double radius = ThreadLocalRandom.current().nextDouble(0, offset); 
+        double newX = this.x + radius * Math.cos(angle); 
+        double newY = this.y + radius * Math.sin(angle); 
         return new Vector2(newX, newY); 
     }
 

@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class world {
 
@@ -82,7 +81,7 @@ public class world {
 
 
         //dynamic food spawning 
-        int baseSpawn = Math.max(5, 10 - creatures.size() / 50);
+        /*int baseSpawn = Math.max(5, 10 - creatures.size() / 50);
         int creaturePenalty = creatures.size() / 50;
 
         int spawnAmount = Math.max(
@@ -94,6 +93,10 @@ public class world {
             if (ThreadLocalRandom.current().nextDouble() < 0.5) {
                 addFood(new food());
             }
+        }*/ 
+
+        for (plant p : plants) {
+            p.update(); 
         }
 
         return new Object[]{deadCreatures, causes, bornCreatures};
