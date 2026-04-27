@@ -33,7 +33,7 @@ public class plant {
             config.scalarMaxBranchUnifrom[0], 
             config.scalarMaxBranchUnifrom[1]
         ) * size / 2) {
-            branches.add(new branch()); 
+            branches.add(new branch(position)); 
         } 
     } 
 

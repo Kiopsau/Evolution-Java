@@ -17,6 +17,9 @@ public class Vector2 {
         return Math.hypot(this.x - other.x, this.y - other.y); 
     }
 
+
+
+
     public Vector2 add(Vector2 other) {
         return new Vector2(this.x + other.x, this.y + other.y); 
     } 
@@ -24,6 +27,29 @@ public class Vector2 {
     public Vector2 add(double x, double y) {
         return new Vector2(this.x + x, this.y + y); 
     }
+
+    public Vector2 add(double num) {
+        return this.add(num, num); 
+    }
+
+
+
+
+    public Vector2 subtract(Vector2 other) {
+        return new Vector2(this.x - other.x, this.y - other.y); 
+    } 
+
+    public Vector2 subtract(double x, double y) {
+        return new Vector2(this.x - x, this.y - y); 
+    }
+
+    public Vector2 subtract(double num) {
+        return this.subtract(num, num); 
+    }
+
+
+
+
 
     public Vector2 copy() {
         return new Vector2(this.x, this.y); 

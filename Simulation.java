@@ -144,7 +144,7 @@ public class Simulation {
                 panel.repaint(); 
                 
                 try {
-                    Thread.sleep(10); 
+                    Thread.sleep(0); 
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }

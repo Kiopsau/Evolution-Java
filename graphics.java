@@ -40,10 +40,11 @@ public class graphics extends JPanel implements KeyListener {
             for (food f : new ArrayList<>(world.foods)) {
                 int x = (int) f.position.getX();
                 int y = (int) f.position.getY();
-                g.fillOval(x, y, 4, 4);
+                int size = 2; 
+                g.fillOval(x - size, y - size, size * 2, size * 2);
             }
 
-            // Draw Creatures
+            //#region Draw Creatures
             for (creature c : new ArrayList<>(world.creatures)) {
                 int size = (int) (c.dna.size * 4); 
                 int x = (int) c.position.getX(); 
@@ -113,14 +114,14 @@ public class graphics extends JPanel implements KeyListener {
                     }
                 } 
             } 
+            //#endregion
 
-            //draw Plants 
+            //#region Draw Plants 
             for (plant p : new ArrayList<>(world.plants)) {
                 g.setColor(Color.GREEN); 
                 int x = (int) p.position.getX();
                 int y = (int) p.position.getY();
                 g.fillOval(x - (int) p.size, y - (int) p.size, (int) (p.size * 2), (int) (p.size * 2)); 
-                //g.fillOval(x, y, 4, 4); 
 
                 //draw branches 
                 for (branch b : p.branches) {
@@ -143,6 +144,7 @@ public class graphics extends JPanel implements KeyListener {
                     }
                 } 
             }
+            //#endregion 
 
             //draw total pop number 
             g.setColor(Color.WHITE); 

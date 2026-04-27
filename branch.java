@@ -3,6 +3,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class branch extends plant {
     public double length = 0.1; 
+
+    public Vector2 position; 
     
     public int maxLength; 
     public double maxFruits; 
@@ -11,7 +13,7 @@ public class branch extends plant {
 
     public double angle; 
 
-    public branch() {
+    public branch(Vector2 position) {
         this.maxLength = ThreadLocalRandom.current().nextInt(
             config.branchLengthUniform[0], 
             config.branchLengthUniform[1]
@@ -23,6 +25,8 @@ public class branch extends plant {
         ); 
         
         this.angle = Math.toRadians(ThreadLocalRandom.current().nextDouble(0, 360)); 
+
+        this.position = position; 
     }
 
     public void growFruit() {
@@ -32,11 +36,12 @@ public class branch extends plant {
             ); */ 
 
             food f = new food(
-                new Vector2(
-                    super.position.getX() - super.size + Math.random() * 10, 
-                    super.position.getY() - super.size + Math.random() * 10
-                )
+                this.position
             ); 
+
+            // int x = (int) p.position.getX();
+            //     int y = (int) p.position.getY();
+            //     g.fillOval(x - (int) p.size, y - (int) p.size, (int) (p.size * 2), (int) (p.size * 2)); 
             fruits.add(f); 
         }
     }
@@ -50,7 +55,7 @@ public class branch extends plant {
     }
 
     public void dropFruit() {
-        if (fruits.size() > 0) {
+        if (!this.fruits.isEmpty()) {
             int i = (int) (Math.random() * fruits.size()); 
             world.foods.add(fruits.get(i)); 
             fruits.remove(i); 
@@ -58,6 +63,7 @@ public class branch extends plant {
     } 
 
 
+    @Override
     public void update() {
         grow(); 
 
@@ -65,7 +71,7 @@ public class branch extends plant {
             growFruit(); 
         } 
 
-        if (Math.random() < 0.001 && fruits.size() > 0) {
+        if (Math.random() < 0.001 && !fruits.isEmpty()) {
             dropFruit(); 
         }
     }
@@ -73,6 +79,7 @@ public class branch extends plant {
 
 
 
+    @Override
     public String toString() {
         return String.format("Branch (length: %.2f, fruits: %d)", length, fruits.size()); 
     }
