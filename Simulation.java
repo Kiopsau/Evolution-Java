@@ -1,4 +1,3 @@
-import java.awt.Color;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
@@ -10,7 +9,7 @@ public class Simulation {
     public static void main(String[] args) {
         world world = new world(config.worldSize[0], config.worldSize[1]); 
 
-        // #region Graphs 
+        // #region Initialize Graphs 
         JFrame frame = new JFrame("Evolution Simulation");
         graphics panel = new graphics(world); 
 
@@ -20,41 +19,41 @@ public class Simulation {
         frame.setLocationRelativeTo(null); // Center on screen
         frame.setVisible(true); 
 
-        JFrame graph1frame = new JFrame("Live Metrics Graph"); 
-        LiveMetricsGraph graph1 = new LiveMetricsGraph(new String[]{"avgSpeed", "avgVision", "avgSize", "avgFOV"}, new Color[]{Color.ORANGE, Color.BLUE, Color.RED, Color.GREEN}); 
+        // JFrame graph1frame = new JFrame("Live Metrics Graph"); 
+        // LiveMetricsGraph graph1 = new LiveMetricsGraph(new String[]{"avgSpeed", "avgVision", "avgSize", "avgFOV"}, new Color[]{Color.ORANGE, Color.BLUE, Color.RED, Color.GREEN}); 
 
-        graph1frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        graph1frame.setSize(900, 650);
+        // graph1frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // graph1frame.setSize(900, 650);
 
-        graph1frame.add(graph1);
-        graph1frame.setLocationRelativeTo(null);
-        graph1frame.setVisible(true); 
+        // graph1frame.add(graph1);
+        // graph1frame.setLocationRelativeTo(null);
+        // graph1frame.setVisible(true); 
 
-        JFrame graph2frame = new JFrame("Live Metrics Graph"); 
-        LiveMetricsGraph graph2 = new LiveMetricsGraph(new String[]{"maxEnergy"}, new Color[]{Color.YELLOW}); 
+        // JFrame graph2frame = new JFrame("Live Metrics Graph"); 
+        // LiveMetricsGraph graph2 = new LiveMetricsGraph(new String[]{"maxEnergy"}, new Color[]{Color.YELLOW}); 
 
-        graph2frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        graph2frame.setSize(500, 500);
+        // graph2frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // graph2frame.setSize(500, 500);
 
-        graph2frame.add(graph2); 
-        graph2frame.setLocationRelativeTo(null);
-        graph2frame.setVisible(true); 
+        // graph2frame.add(graph2); 
+        // graph2frame.setLocationRelativeTo(null);
+        // graph2frame.setVisible(true); 
 
-        JFrame graph3frame = new JFrame("Live Metrics Graph"); 
-        LiveMetricsGraph graph3 = new LiveMetricsGraph(new String[]{"avgDeathAge", "avgDeathAgeSinceLast"}, new Color[]{Color.BLACK, Color.CYAN}); 
+        // JFrame graph3frame = new JFrame("Live Metrics Graph"); 
+        // LiveMetricsGraph graph3 = new LiveMetricsGraph(new String[]{"avgDeathAge", "avgDeathAgeSinceLast"}, new Color[]{Color.BLACK, Color.CYAN}); 
 
-        graph3frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        graph3frame.setSize(500, 500);
+        // graph3frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // graph3frame.setSize(500, 500);
 
-        graph3frame.add(graph3);
-        graph3frame.setLocationRelativeTo(null);
-        graph3frame.setVisible(true); 
+        // graph3frame.add(graph3);
+        // graph3frame.setLocationRelativeTo(null);
+        // graph3frame.setVisible(true); 
         //#endregion
 
         // Spawn initial creatures
-        for (int i = 0; i < config.numCreatures; i++) {
-            world.addCreature(new creature());
-        } 
+        // for (int i = 0; i < config.numCreatures; i++) {
+        //     world.addCreature(new creature());
+        // } 
 
         //Spawn initial plants 
         for (int i = 0; i < config.numPlants; i++) {
@@ -135,10 +134,18 @@ public class Simulation {
                     }
 
                     config.step++; 
+                    //#region Graphing 
+                    // graph1.addStep(new double[]{avgSpeed, avgVision, avgSize, avgFOV}); 
+                    // graph2.addStep(new double[]{maxEnergy}); 
+                    // graph3.addStep(new double[]{avgDeathAge, avgDeathAgeSinceLast}); 
+                    //#endregion
 
-                    graph1.addStep(new double[]{avgSpeed, avgVision, avgSize, avgFOV}); 
-                    graph2.addStep(new double[]{maxEnergy}); 
-                    graph3.addStep(new double[]{avgDeathAge, avgDeathAgeSinceLast}); 
+
+                    if (config.step == 200 * 365) {
+                        for (int i = 0; i < config.numCreatures; i++) {
+                            world.addCreature(new creature());
+                        } 
+                    }
                 } 
 
                 panel.repaint(); 

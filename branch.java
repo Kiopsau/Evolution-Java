@@ -6,7 +6,7 @@ public class branch extends plant {
 
     public Vector2 position; 
     
-    public int maxLength; 
+    public double maxLength; 
     public double maxFruits; 
     
     public ArrayList<food> fruits = new ArrayList<>(); 
@@ -14,10 +14,10 @@ public class branch extends plant {
     public double angle; 
 
     public branch(Vector2 position) {
-        this.maxLength = ThreadLocalRandom.current().nextInt(
+        this.maxLength = ThreadLocalRandom.current().nextDouble(
             config.branchLengthUniform[0], 
             config.branchLengthUniform[1]
-        ); 
+        ) * super.maxSize; 
 
         this.maxFruits = ThreadLocalRandom.current().nextDouble(
             config.fruitsPerBranchLength[0], 
@@ -31,26 +31,45 @@ public class branch extends plant {
 
     public void growFruit() {
         if (fruits.size() < length * maxFruits) {
-            /*food f = new food(
-                super.position.varyRadial(10)
-            ); */ 
 
-            food f = new food(
-                this.position
-            ); 
+            // thickness should match your rendering
+            double halfWidth = length / 20;
 
-            // int x = (int) p.position.getX();
-            //     int y = (int) p.position.getY();
-            //     g.fillOval(x - (int) p.size, y - (int) p.size, (int) (p.size * 2), (int) (p.size * 2)); 
-            fruits.add(f); 
+            // pick a point ALONG the branch (not centered!)
+            double t = Math.pow(ThreadLocalRandom.current().nextDouble(), 0.5) * length;
+
+            // pick offset perpendicular to branch
+            double offset = ThreadLocalRandom.current().nextDouble(-halfWidth, halfWidth);
+
+            double cos = Math.cos(angle);
+            double sin = Math.sin(angle);
+
+            // direction vector (along branch)
+            double dx = cos;
+            double dy = sin;
+
+            // perpendicular vector
+            double px = -sin;
+            double py = cos;
+
+            // final position
+            double spawnX = position.getX() + dx * t + px * offset;
+            double spawnY = position.getY() + dy * t + py * offset;
+
+            food f = new food(new Vector2(spawnX, spawnY));
+            fruits.add(f);
         }
     }
 
     public void grow() {
-        //length += Math.random() * length * config.maxBranchGrowthPercentage; 
-        length += ThreadLocalRandom.current().nextDouble(0, config.maxBranchGrowthPercentage) * length; 
-        if (length > maxLength) {
-            length = maxLength; 
+        double targetLength = maxLength * super.size;
+
+        double growth = ThreadLocalRandom.current().nextDouble(0, config.maxBranchGrowthPercentage); 
+
+        length += (targetLength - length) * growth; 
+
+        if (length > targetLength) {
+            length = targetLength;
         }
     }
 

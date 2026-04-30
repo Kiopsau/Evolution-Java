@@ -50,7 +50,7 @@ public class graphics extends JPanel implements KeyListener {
                 int x = (int) c.position.getX(); 
                 int y = (int) c.position.getY(); 
 
-                g.setColor(Color.RED); 
+                g.setColor(c.color); 
                 if (c.diseased) {
                     g.setColor(Color.YELLOW); 
                 }
@@ -124,10 +124,22 @@ public class graphics extends JPanel implements KeyListener {
                 g.fillOval(x - (int) p.size, y - (int) p.size, (int) (p.size * 2), (int) (p.size * 2)); 
 
                 //draw branches 
+                g.setColor(Color.RED); 
                 for (branch b : p.branches) {
-                    double bx = x + Math.cos(b.angle) * b.length; 
-                    double by = y + Math.sin(b.angle) * b.length; 
-                    g.drawLine(x, y, (int) bx, (int) by); 
+                    int bsx = (int) (Math.cos(b.angle) * p.size); 
+                    int bsy = (int) (Math.sin(b.angle) * p.size); 
+
+                    double bex = x + Math.cos(b.angle) * b.length; 
+                    double bey = y + Math.sin(b.angle) * b.length; 
+                    Graphics2D g2 = (Graphics2D) g;
+
+                    g2.setStroke(new BasicStroke(
+                        (float) b.length / 10,
+                        BasicStroke.CAP_ROUND,
+                        BasicStroke.JOIN_ROUND
+                    ));
+
+                    g2.drawLine(x + bsx, y + bsy, (int) bex + bsx, (int) bey + bsy);
                 } 
 
 
@@ -140,7 +152,7 @@ public class graphics extends JPanel implements KeyListener {
                     g.drawString(p.size + " " + p.branches.size(), x + 10, y - 10);  
 
                     for (int i = 0; i < p.branches.size(); i++) {
-                        g.drawString(p.branches.get(i) + "", x + 10, y - 20 - 10 * i); 
+                        g.drawString(p.branches.get(i) + " " + p.branches.get(i).maxLength * p.size, x + 10, y - 20 - 10 * i); 
                     }
                 } 
             }

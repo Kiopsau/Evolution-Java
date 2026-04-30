@@ -7,25 +7,31 @@ public class plant {
     public ArrayList<branch> branches = new ArrayList<>(); 
 
     public boolean isCollidable; 
+    public double maxSize; 
     public double size; 
+    public String type; 
 
-    public plant(Vector2 position, Boolean isCollidable, Double size) {
+    public plant(Vector2 position, Double maxSize, String type) {
+        this.type = (type != null) ? type : "bush"; 
 
         this.position = (position != null) ? position : new Vector2(
             Math.random() * config.plantPositionUniform[1], 
             Math.random() * config.plantPositionUniform[1]
         ); 
 
-        this.size = (size != null) ? size : ThreadLocalRandom.current().nextDouble(
-            config.plantSizeUniform[0], 
-            config.plantSizeUniform[1]
-        ); 
+        if (type.equals("tree")) {
+            this.maxSize = (maxSize != null) ? maxSize : ThreadLocalRandom.current().nextDouble(
+                config.treeSizeUniform[0], 
+                config.treeSizeUniform[1]
+            ); 
 
-        this.isCollidable = (isCollidable != null) ? isCollidable : false; 
+            this.isCollidable = false; 
+        } 
+        this.size = 1; 
     } 
 
     public plant() {
-        this(null, null, null); 
+        this(null, null, "tree"); 
     } 
 
     public void growBranch() {
@@ -44,6 +50,14 @@ public class plant {
         
         if (Math.random() < config.plantBranchGrowthChance) {
             growBranch(); 
+        } 
+
+        grow(); 
+    } 
+
+    public void grow() {
+        if (size < maxSize) {
+            size = Math.min(size + (maxSize * ThreadLocalRandom.current().nextDouble(0, config.maxTreeGrowthPercentage)), maxSize); 
         } 
     }
 }

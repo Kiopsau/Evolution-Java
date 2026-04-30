@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom; 
 
@@ -21,9 +22,12 @@ public class creature {
 
     private Net brain; 
 
-    public creature(DNA dna, Vector2 position, Double energy, String name, Net brain, Double direction) {
+    public Color color; 
+
+    public creature(DNA dna, Vector2 position, Double energy, String name, Net brain, Double direction, Color color) {
         this.dna = (dna != null) ? dna : DNA.random(); 
         this.brain = (brain != null) ? brain : new Net(); 
+        this.color = (color != null) ? color : config.creatureColorOptions[ThreadLocalRandom.current().nextInt(0, config.creatureColorOptions.length)]; 
 
         this.position = (position != null) ? position : new Vector2(
             ThreadLocalRandom.current().nextDouble(
@@ -62,7 +66,7 @@ public class creature {
     } 
 
     public creature() {
-        this(null, null, null, null, null, null);
+        this(null, null, null, null, null, null, null);
     }
 
 
@@ -259,8 +263,8 @@ public class creature {
 
         // 2. SENSE: Find the nearest food within vision range
         food nearestFood = null;
-        double minDistance = Double.MAX_VALUE;
-        double bestAngle = 0.0; 
+        double minFoodDistance = Double.MAX_VALUE;
+        double bestFoodAngle = 0.0; 
 
         for (food f : world.foods) {
             double dist = this.position.distanceTo(f.position); 
@@ -278,21 +282,59 @@ public class creature {
 
             if (Math.abs(relativeAngle) > this.dna.FOV / 2) continue;
 
-            if (dist < minDistance) {
-                minDistance = dist;
+            if (dist < minFoodDistance) {
+                minFoodDistance = dist;
                 nearestFood = f; 
-                bestAngle = relativeAngle; 
+                bestFoodAngle = relativeAngle; 
+            }
+        } 
+
+        plant nearestPlant = null;
+        double minPlantDistance = Double.MAX_VALUE;
+        double bestPlantAngle = 0.0; 
+
+        for (plant p : world.plants) {
+            double dist = this.position.distanceTo(p.position); 
+
+            if (dist > dna.size * 2 && dist > this.dna.visionRange) continue; 
+            
+            double dx = p.position.getX() - this.position.getX(); 
+            double dy = p.position.getY() - this.position.getY(); 
+
+            double angleToPlant = Math.atan2(dy, dx); 
+            
+            double relativeAngle = angleToPlant - this.direction; 
+
+            relativeAngle = Math.atan2(Math.sin(relativeAngle), Math.cos(relativeAngle)); 
+
+            if (Math.abs(relativeAngle) > this.dna.FOV / 2) continue;
+
+            if (dist < minPlantDistance) {
+                minPlantDistance = dist;
+                nearestPlant = p; 
+                bestPlantAngle = relativeAngle; 
             }
         }
 
         // 3. THINK: Prepare inputs for the Neural Net (Brain)
         // We provide 7 inputs as defined in your Net constructor
-        double distInput = (nearestFood != null) ? minDistance / this.dna.effectiveVision : 0.0;
-        double angleInput = 0.0; // Default if no food seen 
+        double distFoodInput = (nearestFood != null) ? minFoodDistance / this.dna.effectiveVision : 0.0;
+        double angleFoodInput = 0.0; // Default if no food seen 
 
         if (nearestFood != null) {
-            angleInput = bestAngle / Math.PI; 
+            angleFoodInput = bestFoodAngle / Math.PI; 
         }
+
+
+
+        double distPlantInput = (nearestPlant != null) ? minPlantDistance / this.dna.effectiveVision : 0.0;
+        double anglePlantInput = 0.0; // Default if no plant seen 
+
+        if (nearestPlant != null) {
+            anglePlantInput = bestPlantAngle / Math.PI; 
+        }
+
+
 
         boolean onBorder = (this.position.getX() == config.worldSize[0] || this.position.getY() == config.worldSize[1]); 
 
@@ -300,13 +342,15 @@ public class creature {
             this.position.getX() / world.width, // Current X
             this.position.getY() / world.height, // Current Y
             this.energy / config.reproductionCost, // Current Energy
-            distInput,   // Distance to nearest food
-            angleInput,  // Angle to nearest food
+            distFoodInput,   // Distance to nearest food
+            angleFoodInput,  // Angle to nearest food
+            distPlantInput,   // Distance to nearest plant
+            anglePlantInput,  // Angle to nearest plant 
             this.dna.speed, // Own speed DNA 
             this.dna.effectiveVision, 
             this.dna.size, 
             this.metabolism, 
-            (double)age / 1000.0  // Age progress
+            (double)age / 1000.0   // Age progress 
         };
 
         // The brain returns 2 outputs (x and y direction influence)
@@ -318,8 +362,8 @@ public class creature {
 
         if (nearestFood != null) {
             // INNATE NATURE: Vector pointing directly at food
-            moveX = (nearestFood.position.getX() - this.position.getX()) / minDistance;
-            moveY = (nearestFood.position.getY() - this.position.getY()) / minDistance;
+            moveX = (nearestFood.position.getX() - this.position.getX()) / minFoodDistance;
+            moveY = (nearestFood.position.getY() - this.position.getY()) / minFoodDistance;
 
             // BRAIN INFLUENCE: The brain can "nudge" the innate path
             // (Allows evolution to learn more complex paths/avoidance)
@@ -341,7 +385,7 @@ public class creature {
         this.direction = Math.atan2(moveY, moveX); 
         
         // 5. EATING: If we are close enough to the food, consume it
-        if (nearestFood != null && minDistance < (dna.size * 2)) {
+        if (nearestFood != null && minFoodDistance < (dna.size * 2)) {
             this.energy += nearestFood.energy;
             world.foods.remove(nearestFood);
         }
@@ -392,16 +436,20 @@ public class creature {
             creature baby; 
 
             if (Math.random() < 0.85) {
+                Color c = this.color; 
+                if (Math.random() < 0.01) {
+                    c = config.creatureColorOptions[ThreadLocalRandom.current().nextInt(0, config.creatureColorOptions.length)]; 
+                }
                 if (Math.random() < 0.01) {
                     baby = new creature(babyDNA, position.copy(), config.reproductionCost * ThreadLocalRandom.current().nextDouble(
                         config.startingEnergyUniform[0], 
                         config.startingEnergyUniform[1]
-                    ) / 2.0, null, this.brain.mutate(0.5), null); 
+                    ) / 2.0, null, this.brain.mutate(0.5), null, c); 
                 } else {
                     baby = new creature(babyDNA, position.copy(), this.energy / (Math.random() * 5 + 10) + config.reproductionCost * ThreadLocalRandom.current().nextDouble(
                         config.startingEnergyUniform[0], 
                         config.startingEnergyUniform[1]
-                    ), null, this.brain.mutate(0.1), null); 
+                    ), null, this.brain.mutate(0.1), null, c); 
                 }
                 return baby;
             }

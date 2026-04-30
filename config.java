@@ -1,3 +1,5 @@
+import java.awt.Color;
+
 public class config { 
     public static final double[] speedUniform = {0.5, 2.0}; 
     public static final double[] visionUniform = {0.5, 20.0}; 
@@ -7,6 +9,15 @@ public class config {
     public static final double[] worldSize = {500, 500};
 
     public static final double[] creaturePositionUniform = {0, worldSize[0]}; 
+    public static final Color[] creatureColorOptions = {
+        Color.RED, 
+        Color.GREEN, 
+        Color.BLUE, 
+        Color.ORANGE, 
+        Color.CYAN, 
+        Color.MAGENTA, 
+        Color.WHITE
+    }; 
 
     public static final double[] foodPositionUniform = {0, worldSize[0]}; 
     public static final double[] foodEnergyUniform = {0.9, 1.2}; 
@@ -19,9 +30,9 @@ public class config {
 
     public static final double[] metabolismUniform = {0.6, 1.2}; 
 
-    public static final double[] evolutionUniform = {0.75, 1.25};
+    public static final double[] evolutionUniform = {0.75, 1.25}; 
 
-    public static final int numCreatures = 0; 
+    public static final int numCreatures = 100; 
     public static final int numFood = 0; 
     public static final int numPlants = 50; 
 
@@ -47,16 +58,17 @@ public class config {
 
 
     // #region2. PLANTS 
-    public static final int[] branchLengthUniform = {5, 15}; 
-    public static final double[] fruitsPerBranchLength = {0.1, 0.3}; 
+    public static final double[] branchLengthUniform = {1.5, 2.5}; 
+    public static final double[] fruitsPerBranchLength = {0.05, 0.15}; 
 
     public static final double maxBranchGrowthPercentage = 0.01; 
+    public static final double maxTreeGrowthPercentage = 3e-5; 
 
     public static final double[] plantPositionUniform = {0, worldSize[0]}; 
 
-    public static final double[] plantSizeUniform = {2.0, 5.0}; 
+    public static final double[] treeSizeUniform = {10.0, 15.0}; 
 
-    public static double plantBranchGrowthChance = 0.01; 
+    public static double plantBranchGrowthChance = 1e-3; 
 
     public static int[] scalarMaxBranchUnifrom = {1, 3}; 
 

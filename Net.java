@@ -8,7 +8,7 @@ public class Net {
 
     // Default Constructor: Creates a random brain
     public Net() {
-        this(new int[]{10, 32, 64, 16, 3}, null, null); //x, y, energy, dist to food, angle from food, (speed, vision, size, metabolism) -> movement vector (x, y), reproduce?
+        this(new int[]{12, 32, 64, 16, 3}, null, null); //x, y, energy, dist to food, angle from food, (speed, vision, size, metabolism) -> movement vector (x, y), reproduce?
     }
 
     // Parametrized Constructor: Used for creating specific nets or copies
