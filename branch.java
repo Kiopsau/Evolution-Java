@@ -13,16 +13,38 @@ public class branch extends plant {
 
     public double angle; 
 
-    public branch(Vector2 position) {
-        this.maxLength = ThreadLocalRandom.current().nextDouble(
-            config.branchLengthUniform[0], 
-            config.branchLengthUniform[1]
-        ) * super.maxSize; 
+    public String type; 
 
-        this.maxFruits = ThreadLocalRandom.current().nextDouble(
-            config.fruitsPerBranchLength[0], 
-            config.fruitsPerBranchLength[1]
-        ); 
+    public branch(Vector2 position) {
+        this.type = super.type; 
+
+
+        //tree branch 
+        if (this.type.equals("tree")) {
+            this.maxLength = ThreadLocalRandom.current().nextDouble(
+                config.treeBranchLengthUniform[0], 
+                config.treeBranchLengthUniform[1]
+            ) * super.maxSize; 
+
+            this.maxFruits = ThreadLocalRandom.current().nextDouble(
+                config.fruitsPerBranchLength[0], 
+                config.fruitsPerBranchLength[1]
+            ); 
+        }
+
+
+        //bush branch 
+        else if (type.equals("bush")) {
+            this.maxLength = ThreadLocalRandom.current().nextDouble(
+                config.bushBranchLengthUniform[0], 
+                config.bushBranchLengthUniform[1]
+            ) * super.maxSize; 
+
+            this.maxFruits = ThreadLocalRandom.current().nextDouble(
+                config.fruitsPerBranchLength[0], 
+                config.fruitsPerBranchLength[1]
+            ); 
+        }
         
         this.angle = Math.toRadians(ThreadLocalRandom.current().nextDouble(0, 360)); 
 

@@ -58,7 +58,10 @@ public class config {
 
 
     // #region2. PLANTS 
-    public static final double[] branchLengthUniform = {1.5, 2.5}; 
+    public static final double[] treeBranchLengthUniform = {1.5, 2.5}; 
+    public static final double[] bushBranchLengthUniform = {0.1, 0.5}; 
+
+
     public static final double[] fruitsPerBranchLength = {0.05, 0.15}; 
 
     public static final double maxBranchGrowthPercentage = 0.01; 
@@ -67,6 +70,7 @@ public class config {
     public static final double[] plantPositionUniform = {0, worldSize[0]}; 
 
     public static final double[] treeSizeUniform = {10.0, 15.0}; 
+    public static final double[] bushSizeUniform = {3.0, 5.0}; 
 
     public static double plantBranchGrowthChance = 1e-3; 
 

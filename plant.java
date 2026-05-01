@@ -11,6 +11,8 @@ public class plant {
     public double size; 
     public String type; 
 
+    public int maxBranches; 
+
     public plant(Vector2 position, Double maxSize, String type) {
         this.type = (type != null) ? type : "bush"; 
 
@@ -19,26 +21,50 @@ public class plant {
             Math.random() * config.plantPositionUniform[1]
         ); 
 
-        if (type.equals("tree")) {
+        this.maxBranches = ThreadLocalRandom.current().nextInt(
+            config.scalarMaxBranchUnifrom[0], 
+            config.scalarMaxBranchUnifrom[1]
+        ); 
+
+
+        //tree 
+        if (this.type.equals("tree")) {
             this.maxSize = (maxSize != null) ? maxSize : ThreadLocalRandom.current().nextDouble(
                 config.treeSizeUniform[0], 
                 config.treeSizeUniform[1]
             ); 
 
-            this.isCollidable = false; 
+            this.isCollidable = true; 
         } 
+
+
+        //bush 
+        else if (this.type.equals("bush")) {
+            this.maxSize = (maxSize != null) ? maxSize : ThreadLocalRandom.current().nextDouble(
+                config.bushSizeUniform[0], 
+                config.bushSizeUniform[1]
+            ); 
+
+            this.isCollidable = false; 
+
+            this.maxBranches *= 5; 
+        }
+
+
+
         this.size = 1; 
     } 
 
-    public plant() {
-        this(null, null, "tree"); 
+public plant(String type) {
+        this(null, null, type); 
+    } 
+
+    public plant () {
+        this(null, null, null); 
     } 
 
     public void growBranch() {
-        if (branches.size() < ThreadLocalRandom.current().nextInt(
-            config.scalarMaxBranchUnifrom[0], 
-            config.scalarMaxBranchUnifrom[1]
-        ) * size / 2) {
+        if (branches.size() < this.maxBranches * size / 2) {
             branches.add(new branch(position)); 
         } 
     } 

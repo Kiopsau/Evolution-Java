@@ -118,7 +118,15 @@ public class graphics extends JPanel implements KeyListener {
 
             //#region Draw Plants 
             for (plant p : new ArrayList<>(world.plants)) {
-                g.setColor(Color.GREEN); 
+
+                
+                if (p.type.equals("tree")) {
+                    g.setColor(Color.GREEN); 
+                } else if (p.type.equals("bush")) {
+                    g.setColor(Color.BLUE); 
+                }
+
+
                 int x = (int) p.position.getX();
                 int y = (int) p.position.getY();
                 g.fillOval(x - (int) p.size, y - (int) p.size, (int) (p.size * 2), (int) (p.size * 2)); 
