@@ -32,9 +32,9 @@ public class config {
 
     public static final double[] evolutionUniform = {0.75, 1.25}; 
 
-    public static final int numCreatures = 100; 
-    public static final int numFood = 0; 
-    public static final int numPlants = 50; 
+    public static final int numCreatures = 10; 
+    public static final int numFood = 2000; 
+    public static final int numPlants = 25; 
 
     public static final int reproductionCost = 80; 
 
@@ -58,9 +58,11 @@ public class config {
 
 
     // #region2. PLANTS 
-    public static final double[] treeBranchLengthUniform = {1.5, 2.5}; 
+    public static final double[] treeBranchLengthUniform = {3.5, 7.5}; 
     public static final double[] bushBranchLengthUniform = {0.1, 0.5}; 
 
+    public static final double[] treeLifeExpectancy = {100, 500}; 
+    public static final double[] bushLifeExpectancy = {5, 15}; 
 
     public static final double[] fruitsPerBranchLength = {0.05, 0.15}; 
 

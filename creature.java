@@ -24,6 +24,8 @@ public class creature {
 
     public Color color; 
 
+    public ArrayList<food> stomach = new ArrayList<>(); 
+
     public creature(DNA dna, Vector2 position, Double energy, String name, Net brain, Double direction, Color color) {
         this.dna = (dna != null) ? dna : DNA.random(); 
         this.brain = (brain != null) ? brain : new Net(); 
@@ -387,13 +389,25 @@ public class creature {
         // 5. EATING: If we are close enough to the food, consume it
         if (nearestFood != null && minFoodDistance < (dna.size * 2)) {
             this.energy += nearestFood.energy;
+            stomach.add(nearestFood); 
             world.foods.remove(nearestFood);
         }
 
-        // 6. LIFE CYCLE: Check for death or reproduction
+        // 6. Excretion: If the creature has food in its stomach, it can choose to excrete it as new plants in the world 
+        if (!stomach.isEmpty() && Math.random() < 0.10 ) {
+            if (Math.random() < 0.05) {
+                food f = stomach.remove((int) (Math.random() * stomach.size())); 
+
+                world.plants.add(new plant(f.position, null, f.type)); 
+            } else {
+                stomach.remove((int) (Math.random() * stomach.size())); //digested 
+            }
+        }
+
+        // 7. LIFE CYCLE: Check for death or reproduction
         position = new Vector2(
-                Math.max(0, Math.min(world.width, position.getX())),
-                Math.max(0, Math.min(world.height, position.getY()))
+            Math.max(0, Math.min(world.width, position.getX())),
+            Math.max(0, Math.min(world.height, position.getY()))
         ); 
 
         // Check for death or reproduction

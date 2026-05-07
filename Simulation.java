@@ -142,6 +142,13 @@ public class Simulation {
                     //#endregion
 
 
+                    if (config.step == 190 * 365) {
+                        world.foods.clear(); 
+                        for (int i = 0; i < 2500; i++) {
+                            world.foods.add(new food()); 
+                        }
+                    }
+
                     if (config.step == 200 * 365) {
                         for (int i = 0; i < config.numCreatures; i++) {
                             world.addCreature(new creature());

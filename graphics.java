@@ -51,9 +51,9 @@ public class graphics extends JPanel implements KeyListener {
                 int y = (int) c.position.getY(); 
 
                 g.setColor(c.color); 
-                if (c.diseased) {
-                    g.setColor(Color.YELLOW); 
-                }
+                // if (c.diseased) {
+                //     g.setColor(Color.YELLOW); 
+                // }
                 
                 g.fillOval(x - size, y - size, size * 2, size * 2); 
                 
@@ -157,10 +157,10 @@ public class graphics extends JPanel implements KeyListener {
                     g.setColor(Color.YELLOW);
                     g.drawOval(x - (int) p.size - 2, y - (int) p.size - 2, ((int) p.size + 2) * 2, ((int) p.size + 2) * 2);
                     g.setColor(Color.WHITE); 
-                    g.drawString(p.size + " " + p.branches.size(), x + 10, y - 10);  
+                    g.drawString(p.type + " " + p.size + " " + p.branches.size(), x + 10, y - 10);  
 
                     for (int i = 0; i < p.branches.size(); i++) {
-                        g.drawString(p.branches.get(i) + " " + p.branches.get(i).maxLength * p.size, x + 10, y - 20 - 10 * i); 
+                        g.drawString(p.branches.get(i) + " " + p.branches.get(i).maxLength * p.size + " " + p.branches.get(i).type, x + 10, y - 20 - 10 * i); 
                     }
                 } 
             }

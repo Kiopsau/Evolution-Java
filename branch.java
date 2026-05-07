@@ -15,8 +15,8 @@ public class branch extends plant {
 
     public String type; 
 
-    public branch(Vector2 position) {
-        this.type = super.type; 
+    public branch(Vector2 position, String type) {
+        this.type = type; 
 
 
         //tree branch 
@@ -43,7 +43,7 @@ public class branch extends plant {
             this.maxFruits = ThreadLocalRandom.current().nextDouble(
                 config.fruitsPerBranchLength[0], 
                 config.fruitsPerBranchLength[1]
-            ); 
+            ) * 10; 
         }
         
         this.angle = Math.toRadians(ThreadLocalRandom.current().nextDouble(0, 360)); 
@@ -55,10 +55,10 @@ public class branch extends plant {
         if (fruits.size() < length * maxFruits) {
 
             // thickness should match your rendering
-            double halfWidth = length / 20;
+            double halfWidth = length / 5;
 
             // pick a point ALONG the branch (not centered!)
-            double t = Math.pow(ThreadLocalRandom.current().nextDouble(), 0.5) * length;
+            double t = Math.pow(ThreadLocalRandom.current().nextDouble(), 0.5) * length * 1.5;
 
             // pick offset perpendicular to branch
             double offset = ThreadLocalRandom.current().nextDouble(-halfWidth, halfWidth);
@@ -78,13 +78,13 @@ public class branch extends plant {
             double spawnX = position.getX() + dx * t + px * offset;
             double spawnY = position.getY() + dy * t + py * offset;
 
-            food f = new food(new Vector2(spawnX, spawnY));
+            food f = new food(new Vector2(spawnX, spawnY), 0.0, this.type);
             fruits.add(f);
         }
     }
 
     public void grow() {
-        double targetLength = maxLength * super.size;
+        double targetLength = maxLength * (super.size / super.maxSize);
 
         double growth = ThreadLocalRandom.current().nextDouble(0, config.maxBranchGrowthPercentage); 
 

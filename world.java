@@ -64,14 +64,21 @@ public class world {
 
         // Collect dead
         List<creature> deadCreatures = new ArrayList<>();
+        List<plant> deadPlants = new ArrayList<>();
         for (creature c : creatures) {
             if (!c.isAlive()) {
                 deadCreatures.add(c);
             }
         }
+        for (plant p : plants) {
+            if (!p.isAlive()) {
+                deadPlants.add(p);
+            }
+        }
 
         // Remove dead
         creatures.removeAll(deadCreatures);
+        plants.removeAll(deadPlants); 
 
         // Add newborns
         creatures.addAll(bornCreatures);
@@ -81,19 +88,19 @@ public class world {
 
 
         //dynamic food spawning 
-        /*int baseSpawn = Math.max(5, 10 - creatures.size() / 50);
-        int creaturePenalty = creatures.size() / 50;
+        // int baseSpawn = Math.max(5, 10 - creatures.size() / 50);
+        // int creaturePenalty = creatures.size() / 50;
 
-        int spawnAmount = Math.max(
-                Math.max(1, creatures.size() / 100),
-                baseSpawn - creaturePenalty
-        );
+        // int spawnAmount = Math.max(
+        //         Math.max(1, creatures.size() / 100),
+        //         baseSpawn - creaturePenalty
+        // );
 
-        for (int i = 0; i < spawnAmount; i++) {
-            if (ThreadLocalRandom.current().nextDouble() < 0.5) {
-                addFood(new food());
-            }
-        }*/ 
+        // for (int i = 0; i < spawnAmount; i++) {
+        //     if (ThreadLocalRandom.current().nextDouble() < 0.5) {
+        //         addFood(new food());
+        //     }
+        // } 
 
         for (plant p : plants) {
             p.update(); 

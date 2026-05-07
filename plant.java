@@ -13,6 +13,11 @@ public class plant {
 
     public int maxBranches; 
 
+    public int age = 0; 
+    public int lifeExpectancy; 
+
+    public boolean isAlive = true; 
+
     public plant(Vector2 position, Double maxSize, String type) {
         this.type = (type != null) ? type : "bush"; 
 
@@ -35,8 +40,12 @@ public class plant {
             ); 
 
             this.isCollidable = true; 
-        } 
 
+            this.lifeExpectancy = (int) (ThreadLocalRandom.current().nextDouble(
+                config.treeLifeExpectancy[0], 
+                config.treeLifeExpectancy[1]
+            ) * 365); 
+        } 
 
         //bush 
         else if (this.type.equals("bush")) {
@@ -48,6 +57,11 @@ public class plant {
             this.isCollidable = false; 
 
             this.maxBranches *= 5; 
+
+            this.lifeExpectancy = (int) (ThreadLocalRandom.current().nextDouble(
+                config.bushLifeExpectancy[0], 
+                config.bushLifeExpectancy[1]
+            ) * 365); 
         }
 
 
@@ -55,7 +69,7 @@ public class plant {
         this.size = 1; 
     } 
 
-public plant(String type) {
+    public plant(String type) {
         this(null, null, type); 
     } 
 
@@ -65,11 +79,12 @@ public plant(String type) {
 
     public void growBranch() {
         if (branches.size() < this.maxBranches * size / 2) {
-            branches.add(new branch(position)); 
+            branches.add(new branch(position, this.type)); 
         } 
     } 
 
     public void update() {
+        age++; 
         for (branch b : branches) {
             b.update(); 
         }
@@ -79,11 +94,24 @@ public plant(String type) {
         } 
 
         grow(); 
+
+        if (age > lifeExpectancy) {
+            kill(); 
+        }
     } 
 
     public void grow() {
         if (size < maxSize) {
             size = Math.min(size + (maxSize * ThreadLocalRandom.current().nextDouble(0, config.maxTreeGrowthPercentage)), maxSize); 
         } 
+    } 
+
+
+    public void kill() {
+        this.isAlive = false; 
+    }
+
+    public boolean isAlive() {
+        return isAlive; 
     }
 }

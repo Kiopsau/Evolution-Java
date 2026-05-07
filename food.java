@@ -4,11 +4,10 @@ public class food {
     final public Vector2 position; 
     public double energy; 
 
-    public food(Vector2 position, double energy) {
-        if (position != null) {
-            this.position = position; 
-        } else {
-            this.position = new Vector2(
+    String type; 
+
+    public food(Vector2 position, double energy, String type) {
+        this.position = (position != null) ? position : new Vector2(
                 ThreadLocalRandom.current().nextDouble(
                     config.foodPositionUniform[0], 
                     config.foodPositionUniform[1] 
@@ -18,25 +17,28 @@ public class food {
                     config.foodPositionUniform[1] 
                 )
             ); 
-        }
 
-        this.energy = ThreadLocalRandom.current().nextDouble(
+        this.energy = (energy != 0.0) ? energy : ThreadLocalRandom.current().nextDouble(
             config.foodEnergyUniform[0], 
             config.foodEnergyUniform[1]
-        ) * energy; 
+        ) * 40; 
+
+        this.type = (type != null) ? type : "bush"; 
+
+
     } 
 
     public food() {
-        this(null, 40); 
+        this(null, 0.0, null); 
     } 
 
-    public food(Vector2 position) {
-        this(position, 40); 
-    }
+    // public food(Vector2 position) {
+    //     this(position, 0.0, "bush"); 
+    // }
 
-    public food(double energy) {
-        this(null, energy); 
-    } 
+    // public food(String type) {
+    //     this(null, 0.0, type); 
+    // }
 
 
     @Override
