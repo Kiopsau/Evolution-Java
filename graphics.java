@@ -35,6 +35,26 @@ public class graphics extends JPanel implements KeyListener {
         if (world == null) return;
 
         try {
+            //draw nutrient map 
+            int cellSize = 1;
+
+            for (int x = 0; x < world.nutrientMap.length; x++) {
+                for (int y = 0; y < world.nutrientMap[0].length; y++) {
+
+                    double value = world.nutrientMap[x][y];
+                    value = Math.max(0, Math.min(1, value));
+                    int color = (int)(value * 255);
+
+                    g.setColor(new Color(color, color, color));
+
+                    g.fillRect(
+                            x * cellSize,
+                            y * cellSize,
+                            cellSize,
+                            cellSize
+                    );
+                }
+            }
             // Draw Food
             g.setColor(Color.LIGHT_GRAY);
             for (food f : new ArrayList<>(world.foods)) {
@@ -160,7 +180,7 @@ public class graphics extends JPanel implements KeyListener {
                     g.drawString(p.type + " " + p.size + " " + p.branches.size(), x + 10, y - 10);  
 
                     for (int i = 0; i < p.branches.size(); i++) {
-                        g.drawString(p.branches.get(i) + " " + p.branches.get(i).maxLength * p.size + " " + p.branches.get(i).type, x + 10, y - 20 - 10 * i); 
+                        g.drawString(p.branches.get(i) + " " + p.branches.get(i).maxLength * p.maxSize + " " + p.branches.get(i).type, x + 10, y - 20 - 10 * i); 
                     }
                 } 
             }

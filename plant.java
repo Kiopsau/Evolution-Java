@@ -79,7 +79,7 @@ public class plant {
 
     public void growBranch() {
         if (branches.size() < this.maxBranches * size / 2) {
-            branches.add(new branch(position, this.type)); 
+            branches.add(new branch(position, this.type, this)); 
         } 
     } 
 

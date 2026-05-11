@@ -154,6 +154,11 @@ public class Simulation {
                             world.addCreature(new creature());
                         } 
                     }
+
+                    if (world.creatures.isEmpty() && world.plants.isEmpty()) {
+                        // writer.write("All creatures died.\n"); 
+                        break; 
+                    }
                 } 
 
                 panel.repaint(); 
@@ -163,10 +168,6 @@ public class Simulation {
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
-            }
-
-            if (world.creatures.isEmpty()) {
-                // writer.write("All creatures died.\n");
             }
 
         } catch (IOException e) {

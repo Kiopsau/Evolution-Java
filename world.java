@@ -9,6 +9,8 @@ public class world {
     public static List<food> foods; 
     public List<plant> plants; 
 
+    public double[][] nutrientMap; 
+
     // Constructor (default args equivalent)
     public world(double width, double height) {
         this.width = width;
@@ -17,6 +19,8 @@ public class world {
         this.creatures = new ArrayList<>();
         this.foods = new ArrayList<>(); 
         this.plants = new ArrayList<>(); 
+
+        this.nutrientMap = perlinNoise.gen((int) width, (int) height); 
     }
 
     // Default constructor

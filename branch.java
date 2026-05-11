@@ -15,16 +15,19 @@ public class branch extends plant {
 
     public String type; 
 
-    public branch(Vector2 position, String type) {
+    public plant parent; 
+
+    public branch(Vector2 position, String type, plant parent) {
         this.type = type; 
 
+        this.parent = parent; 
 
         //tree branch 
         if (this.type.equals("tree")) {
             this.maxLength = ThreadLocalRandom.current().nextDouble(
                 config.treeBranchLengthUniform[0], 
                 config.treeBranchLengthUniform[1]
-            ) * super.maxSize; 
+            ); 
 
             this.maxFruits = ThreadLocalRandom.current().nextDouble(
                 config.fruitsPerBranchLength[0], 
@@ -38,7 +41,7 @@ public class branch extends plant {
             this.maxLength = ThreadLocalRandom.current().nextDouble(
                 config.bushBranchLengthUniform[0], 
                 config.bushBranchLengthUniform[1]
-            ) * super.maxSize; 
+            ); 
 
             this.maxFruits = ThreadLocalRandom.current().nextDouble(
                 config.fruitsPerBranchLength[0], 
@@ -84,7 +87,7 @@ public class branch extends plant {
     }
 
     public void grow() {
-        double targetLength = maxLength * (super.size / super.maxSize);
+        double targetLength = maxLength * parent.size; 
 
         double growth = ThreadLocalRandom.current().nextDouble(0, config.maxBranchGrowthPercentage); 
 
