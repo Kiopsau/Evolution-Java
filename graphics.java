@@ -1,4 +1,6 @@
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 import java.util.ArrayList;
 import javax.swing.*;
@@ -8,7 +10,10 @@ public class graphics extends JPanel implements KeyListener {
     public world world; 
     public boolean paused = false;
     private int mouseX = 0;
-    private int mouseY = 0;
+    private int mouseY = 0; 
+
+    private int clickX = 0; 
+    private int clickY = 0; 
 
     // Constructor accepts the world created in Simulation.java
     public graphics(world world) {
@@ -26,7 +31,17 @@ public class graphics extends JPanel implements KeyListener {
                 mouseX = e.getX();
                 mouseY = e.getY();
             }
+        }); 
+
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                clickX = e.getX();
+                clickY = e.getY();
+            }
         });
+
     }
 
     @Override
@@ -133,6 +148,79 @@ public class graphics extends JPanel implements KeyListener {
                         g.drawString(c.diseases.get(i), x + 10, y - 20 - 10 * i); 
                     }
                 } 
+
+                double clickDist = Math.hypot(x - clickX, y - clickY);
+
+                if (clickDist <= size) {
+
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.append("{\n");
+
+                    // WEIGHTS
+                    sb.append("  \"weights\": [\n");
+
+                    for (int l = 0; l < c.brain.weights.size(); l++) {
+                        double[][] layer = c.brain.weights.get(l);
+
+                        sb.append("    [\n");
+
+                        for (int i = 0; i < layer.length; i++) {
+                            sb.append("      [");
+
+                            for (int j = 0; j < layer[i].length; j++) {
+                                sb.append(String.format("%.3f", layer[i][j]));
+                                if (j < layer[i].length - 1) sb.append(", ");
+                            }
+
+                            sb.append("]");
+
+                            if (i < layer.length - 1) sb.append(",");
+                            sb.append("\n");
+                        }
+
+                        sb.append("    ]");
+
+                        if (l < c.brain.weights.size() - 1) sb.append(",");
+                        sb.append("\n");
+                    }
+
+                    sb.append("  ],\n");
+
+                    // BIASES
+                    sb.append("  \"biases\": [\n");
+
+                    for (int l = 0; l < c.brain.biases.size(); l++) {
+                        double[] layer = c.brain.biases.get(l);
+
+                        sb.append("    [");
+
+                        for (int i = 0; i < layer.length; i++) {
+                            sb.append(String.format("%.3f", layer[i]));
+                            if (i < layer.length - 1) sb.append(", ");
+                        }
+
+                        sb.append("]");
+
+                        if (l < c.brain.biases.size() - 1) sb.append(",");
+                        sb.append("\n");
+                    }
+
+                    sb.append("  ]\n");
+
+                    sb.append("}\n");
+
+                    StringSelection selection = new StringSelection(sb.toString());
+
+                    Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                    clipboard.setContents(selection, null);
+
+                    clickX = -1;
+                    clickY = -1;
+
+                    System.out.println("Copied JSON to Clipboard");
+                }
+                
             } 
             //#endregion
 

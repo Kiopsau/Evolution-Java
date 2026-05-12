@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -8,7 +11,18 @@ public class Net {
 
     // Default Constructor: Creates a random brain
     public Net() {
-        this(new int[]{12, 32, 64, 16, 3}, null, null); //x, y, energy, dist to food, angle from food, (speed, vision, size, metabolism) -> movement vector (x, y), reproduce?
+        this(
+            config.defaultLayers,
+            null,
+            null
+        );
+
+        LoadedNet loaded = loadOrCreate(config.defaultLayers);
+
+        if (loaded != null && loaded.weights != null && !loaded.weights.isEmpty()) {
+            this.weights = loaded.weights;
+            this.biases = loaded.biases;
+        }
     }
 
     // Parametrized Constructor: Used for creating specific nets or copies
@@ -41,6 +55,8 @@ public class Net {
             }
         }
     }
+
+
 
     // Forward propagation: Input -> Output 
     public double[] forward(double[] input) {
@@ -123,5 +139,222 @@ public class Net {
         }
 
         return new Net(this.layers.clone(), newWeights, newBiases);
+    } 
+
+
+
+
+
+
+    public static Net fromString(String data, int[] layers) {
+        String[] lines = data.split("\n");
+
+        List<double[][]> weights = new ArrayList<>();
+        List<double[]> biases = new ArrayList<>();
+
+        boolean readingWeights = false;
+        boolean readingBiases = false;
+
+        List<double[]> currentMatrix = new ArrayList<>();
+
+        for (String line : lines) {
+            line = line.trim();
+
+            if (line.startsWith("Weights")) {
+                readingWeights = true;
+                readingBiases = false;
+                continue;
+            }
+
+            if (line.startsWith("Biases")) {
+                readingWeights = false;
+                readingBiases = true;
+
+                // flush last weight block if exists
+                if (!currentMatrix.isEmpty()) {
+                    weights.add(currentMatrix.toArray(new double[0][]));
+                    currentMatrix.clear();
+                }
+
+                continue;
+            }
+
+            if (line.isEmpty() || line.equals("{") || line.equals("}")) continue;
+
+            // remove braces
+            if (line.startsWith("{")) line = line.substring(1);
+            if (line.endsWith("}")) line = line.substring(0, line.length() - 1);
+
+            String[] nums = line.split(",");
+
+            double[] row = new double[nums.length];
+
+            for (int i = 0; i < nums.length; i++) {
+                row[i] = Double.parseDouble(nums[i].trim());
+            }
+
+            if (readingWeights) {
+                currentMatrix.add(row);
+            }
+
+            if (readingBiases) {
+                biases.add(row);
+            }
+        }
+
+        // flush final weight block
+        if (!currentMatrix.isEmpty()) {
+            weights.add(currentMatrix.toArray(new double[0][]));
+        }
+
+        return new Net(layers, weights, biases);
+    }
+
+
+
+
+
+
+    private static LoadedNet loadOrCreate(int[] layers) {
+        try {
+            File file = new File("net_data.txt");
+
+            if (!file.exists() || file.length() == 0) {
+                return new LoadedNet(
+                    new ArrayList<>(),
+                    new ArrayList<>()
+                );
+            }
+
+            BufferedReader br = new BufferedReader(new FileReader(file));
+
+            String line;
+            boolean readingWeights = false;
+            boolean readingBiases = false;
+
+            List<double[][]> weights = new ArrayList<>();
+            List<double[]> biases = new ArrayList<>();
+
+            List<double[]> currentLayer = new ArrayList<>();
+
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
+
+                if (line.startsWith("Weights")) {
+                    readingWeights = true;
+                    readingBiases = false;
+                    continue;
+                }
+
+                if (line.startsWith("Biases")) {
+                    readingWeights = false;
+                    readingBiases = true;
+
+                    if (!currentLayer.isEmpty()) {
+                        weights.add(currentLayer.toArray(new double[0][]));
+                        currentLayer.clear();
+                    }
+
+                    continue;
+                }
+
+                if (line.isEmpty() || line.equals("{") || line.equals("}")) continue;
+
+                if (line.startsWith("{")) line = line.substring(1);
+                if (line.endsWith("}")) line = line.substring(0, line.length() - 1);
+
+                String[] nums = line.split(",");
+
+                double[] row = new double[nums.length];
+
+                for (int i = 0; i < nums.length; i++) {
+                    row[i] = Double.parseDouble(nums[i].trim());
+                }
+
+                if (readingWeights) {
+                    currentLayer.add(row);
+                }
+
+                if (readingBiases) {
+                    biases.add(row);
+                }
+            }
+
+            br.close();
+
+            if (!currentLayer.isEmpty()) {
+                weights.add(currentLayer.toArray(new double[0][]));
+            }
+
+            return new LoadedNet(weights, biases);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new LoadedNet(new ArrayList<>(), new ArrayList<>());
+        }
+    }
+
+
+
+    
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Weights:\n");
+
+        for (double[][] layer : weights) {
+            sb.append("{");
+
+            for (int i = 0; i < layer.length; i++) {
+                sb.append("{");
+
+                for (int j = 0; j < layer[i].length; j++) {
+                    sb.append(String.format("%.3f", layer[i][j]));
+
+                    if (j < layer[i].length - 1) {
+                        sb.append(", ");
+                    }
+                }
+
+                sb.append("}");
+
+                if (i < layer.length - 1) {
+                    sb.append(", ");
+                }
+            }
+
+            sb.append("}\n");
+        }
+
+        sb.append("\nBiases:\n");
+
+        for (double[] layer : biases) {
+            sb.append("{");
+
+            for (int i = 0; i < layer.length; i++) {
+                sb.append(String.format("%.3f", layer[i]));
+
+                if (i < layer.length - 1) {
+                    sb.append(", ");
+                }
+            }
+
+            sb.append("}\n");
+        }
+
+        return sb.toString();
+    } 
+
+
+
+    static class LoadedNet {
+        List<double[][]> weights;
+        List<double[]> biases;
+
+        LoadedNet(List<double[][]> w, List<double[]> b) {
+            this.weights = w;
+            this.biases = b;
+        }
     }
 }

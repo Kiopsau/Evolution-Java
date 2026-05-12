@@ -20,7 +20,7 @@ public class creature {
 
     public String name; 
 
-    private Net brain; 
+    public Net brain; 
 
     public Color color; 
 
@@ -394,7 +394,7 @@ public class creature {
         }
 
         // 6. Excretion: If the creature has food in its stomach, it can choose to excrete it as new plants in the world 
-        if (!stomach.isEmpty() && Math.random() < 0.10 ) {
+        if (!stomach.isEmpty() && Math.random() < 0.01) {
             if (Math.random() < 0.05) {
                 food f = stomach.remove((int) (Math.random() * stomach.size())); 
 

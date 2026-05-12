@@ -32,9 +32,9 @@ public class config {
 
     public static final double[] evolutionUniform = {0.75, 1.25}; 
 
-    public static final int numCreatures = 0; 
-    public static final int numFood = 0; 
-    public static final int numPlants = 0; 
+    public static final int numCreatures = 10; 
+    public static final int numFood = 2000; 
+    public static final int numPlants = 25; 
 
     public static final int reproductionCost = 80; 
 
@@ -45,6 +45,7 @@ public class config {
 
     public static final int maxNeurons = 20; 
     public static final int maxLayers = 10; 
+    public static final int[] defaultLayers = new int[]{12, 32, 64, 16, 3}; //x, y, energy, dist to food, angle from food, (speed, vision, size, metabolism) -> movement vector (x, y), reproduce? 
 
     public static final double maxTurn = 0.5; 
 
@@ -79,5 +80,6 @@ public class config {
     public static int[] scalarMaxBranchUnifrom = {1, 3}; 
 
     public static double branchFruitGrowthChance = 0.075; 
+
     //#endregion 
 }
