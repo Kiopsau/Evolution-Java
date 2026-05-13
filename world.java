@@ -1,4 +1,4 @@
-import java.util.*;
+import java.util.*; 
 
 public class world {
 
@@ -7,9 +7,9 @@ public class world {
 
     public List<creature> creatures;
     public static List<food> foods; 
-    public List<plant> plants; 
+    public static List<plant> plants; 
 
-    public double[][] nutrientMap; 
+    public static double[][] nutrientMap; 
 
     // Constructor (default args equivalent)
     public world(double width, double height) {
@@ -109,6 +109,8 @@ public class world {
         for (plant p : plants) {
             p.update(); 
         }
+
+        perlinNoise.diffuse(world.nutrientMap, 0.01);
 
         return new Object[]{deadCreatures, causes, bornCreatures};
     }

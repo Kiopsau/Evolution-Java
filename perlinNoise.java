@@ -118,4 +118,63 @@ public class perlinNoise {
 
         return p; 
     }
+
+
+
+
+
+
+
+    public static void diffuse(double[][] map, double diffusionRate) {
+        int w = map.length;
+        int h = map[0].length;
+
+        double[][] newMap = new double[w][h];
+
+        for (int x = 0; x < w; x++) {
+            for (int y = 0; y < h; y++) {
+
+                double current = map[x][y];
+
+                double sum = current;
+                int count = 1;
+
+                // left
+                if (x > 0) {
+                    sum += map[x - 1][y];
+                    count++;
+                }
+
+                // right
+                if (x < w - 1) {
+                    sum += map[x + 1][y];
+                    count++;
+                }
+
+                // up
+                if (y > 0) {
+                    sum += map[x][y - 1];
+                    count++;
+                }
+
+                // down
+                if (y < h - 1) {
+                    sum += map[x][y + 1];
+                    count++;
+                }
+
+                double average = sum / count;
+
+                // blend current with average
+                newMap[x][y] =
+                    current * (1 - diffusionRate)
+                    + average * diffusionRate;
+            }
+        }
+
+        // copy back
+        for (int x = 0; x < w; x++) {
+            System.arraycopy(newMap[x], 0, map[x], 0, h);
+        }
+    }
 } 

@@ -160,51 +160,49 @@ public class Net {
         for (String line : lines) {
             line = line.trim();
 
-            if (line.startsWith("Weights")) {
+            if (line.equals("Weights:")) {
                 readingWeights = true;
                 readingBiases = false;
                 continue;
             }
 
-            if (line.startsWith("Biases")) {
+            if (line.equals("Biases:")) {
                 readingWeights = false;
                 readingBiases = true;
-
-                // flush last weight block if exists
-                if (!currentMatrix.isEmpty()) {
-                    weights.add(currentMatrix.toArray(new double[0][]));
-                    currentMatrix.clear();
-                }
-
                 continue;
             }
 
-            if (line.isEmpty() || line.equals("{") || line.equals("}")) continue;
+            if (line.equals("[")) {
+                currentMatrix = new ArrayList<>();
+                continue;
+            }
 
-            // remove braces
-            if (line.startsWith("{")) line = line.substring(1);
-            if (line.endsWith("}")) line = line.substring(0, line.length() - 1);
+            if (line.equals("]")) {
+                if (readingWeights) {
+                    weights.add(currentMatrix.toArray(new double[0][]));
+                }
+                continue;
+            }
+
+            if (line.isEmpty()) continue;
+
+            line = line.replace("[", "").replace("]", "");
 
             String[] nums = line.split(",");
 
-            double[] row = new double[nums.length];
+            double[] values = new double[nums.length];
 
             for (int i = 0; i < nums.length; i++) {
-                row[i] = Double.parseDouble(nums[i].trim());
+                values[i] = Double.parseDouble(nums[i].trim());
             }
 
             if (readingWeights) {
-                currentMatrix.add(row);
+                currentMatrix.add(values);
             }
 
             if (readingBiases) {
-                biases.add(row);
+                biases.add(values);
             }
-        }
-
-        // flush final weight block
-        if (!currentMatrix.isEmpty()) {
-            weights.add(currentMatrix.toArray(new double[0][]));
         }
 
         return new Net(layers, weights, biases);
@@ -304,47 +302,23 @@ public class Net {
         sb.append("Weights:\n");
 
         for (double[][] layer : weights) {
-            sb.append("{");
+            sb.append("[\n");
 
-            for (int i = 0; i < layer.length; i++) {
-                sb.append("{");
-
-                for (int j = 0; j < layer[i].length; j++) {
-                    sb.append(String.format("%.3f", layer[i][j]));
-
-                    if (j < layer[i].length - 1) {
-                        sb.append(", ");
-                    }
-                }
-
-                sb.append("}");
-
-                if (i < layer.length - 1) {
-                    sb.append(", ");
-                }
+            for (double[] row : layer) {
+                sb.append(Arrays.toString(row)).append("\n");
             }
 
-            sb.append("}\n");
+            sb.append("]\n");
         }
 
-        sb.append("\nBiases:\n");
+        sb.append("Biases:\n");
 
         for (double[] layer : biases) {
-            sb.append("{");
-
-            for (int i = 0; i < layer.length; i++) {
-                sb.append(String.format("%.3f", layer[i]));
-
-                if (i < layer.length - 1) {
-                    sb.append(", ");
-                }
-            }
-
-            sb.append("}\n");
+            sb.append(Arrays.toString(layer)).append("\n");
         }
 
         return sb.toString();
-    } 
+    }
 
 
 

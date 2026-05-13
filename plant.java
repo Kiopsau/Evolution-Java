@@ -18,6 +18,14 @@ public class plant {
 
     public boolean isAlive = true; 
 
+
+
+    public double fitness; 
+    public double nutrition; 
+    public double sunlight; 
+    public double crowding; 
+    public double health = 1.0; 
+
     public plant(Vector2 position, Double maxSize, String type) {
         this.type = (type != null) ? type : "bush"; 
 
@@ -83,28 +91,125 @@ public class plant {
         } 
     } 
 
+
+
+
     public void update() {
+        if (!isAlive) return; 
+
         age++; 
+
         for (branch b : branches) {
             b.update(); 
-        }
-        
-        if (Math.random() < config.plantBranchGrowthChance) {
-            growBranch(); 
         } 
+
+        sampleEnvironment(getNearbyPlants()); 
+
+        calculateFitness(); 
 
         grow(); 
 
+        attemptBranchGrowth(); 
+
+        //check starvation 
+        starvationCheck(); 
+
+        //Old age 
         if (age > lifeExpectancy) {
             kill(); 
         }
     } 
 
-    public void grow() {
-        if (size < maxSize) {
-            size = Math.min(size + (maxSize * ThreadLocalRandom.current().nextDouble(0, config.maxTreeGrowthPercentage)), maxSize); 
+
+    private void sampleEnvironment(List<plant> nearby) {
+        int clampedX = Math.max(0, Math.min(world.nutrientMap.length - 1, (int) position.getX())); 
+        int clampedY = Math.max(0, Math.min(world.nutrientMap.length - 1, (int) position.getY())); 
+        this.nutrition = world.nutrientMap[clampedX][clampedY]; 
+
+        world.nutrientMap[clampedX][clampedY] *= 0.9999; 
+
+        this.crowding = nearby.size(); 
+
+        List<plant> tallers = new ArrayList<>(); 
+        
+        double nutritionFactor = 1.0; 
+        double sunlightFactor = 1.0; 
+
+        for(plant p : nearby) {
+            if(p.size > this.size) {
+                tallers.add(p); 
+
+                nutritionFactor -= 0.1 * (p.size - this.size) / this.position.distanceTo(p.position); 
+                sunlightFactor -= 0.05 * Math.max(0, p.size - this.size) / (this.size + 1); 
+            }
         } 
+
+        this.nutrition *= Math.max(0.1, nutritionFactor); 
+        this.sunlight = Math.max(0.1, sunlightFactor); 
     } 
+
+
+
+    public void calculateFitness() {
+        double maintenanceCost = 0.02 * size; 
+
+        fitness = (nutrition * sunlight * health * 10) / (1 + crowding) - maintenanceCost; 
+    }
+
+
+
+    public void attemptBranchGrowth() {
+        int branchCapacity = (int) (maxBranches * fitness * health); 
+
+        if (branches.size() < branchCapacity && Math.random() < fitness * 0.05) {
+            growBranch(); 
+        }
+    } 
+
+
+
+    public void starvationCheck() {
+        if (fitness < 0.05) {
+            health -= 0.001; 
+        } else {
+            health += 0.0005; 
+        }
+
+        health = Math.max(0, Math.min(1, health)); 
+
+        if (health <= 0) {
+            kill(); 
+        }
+    } 
+
+
+
+    private List<plant> getNearbyPlants() {
+        List<plant> nearby = new ArrayList<>(); 
+        for (plant p : world.plants) {
+            if (p != this && p.position.distanceTo(this.position) < 10 * (this.size + p.size)) {
+                nearby.add(p); 
+            }
+        }
+        return nearby; 
+    }
+
+
+
+    public void grow() {
+        if (size >= maxSize) return;
+
+        if (fitness <= 0) return;
+
+        double growthRate =
+            fitness *
+            config.maxTreeGrowthPercentage;
+
+        size = Math.min(
+            size + growthRate,
+            maxSize
+        );
+    }
 
 
     public void kill() {
